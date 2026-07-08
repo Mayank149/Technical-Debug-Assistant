@@ -2,7 +2,7 @@
 
 A RAG (Retrieval-Augmented Generation) powered technical debugging assistant. It utilizes a fast vector search database, semantic text embeddings, and LLaMA-3.3-70b to deliver precise, context-grounded solutions for runtime stacktraces, configurations, and developer documentation.
 
-![UI Screenshot](image.png)
+![UI Screenshot](screenshot.png)
 
 ---
 
