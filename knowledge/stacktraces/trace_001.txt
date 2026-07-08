@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/app/app.py", line 42, in <module>
+    app = create_app()
+  File "/app/app_factory.py", line 18, in create_app
+    from routes.health import health_bp
+  File "/app/routes/health.py", line 7, in <module>
+    APP_NAME = current_app.config.get("APP_NAME", "debug-assistant")
+  File "/usr/local/lib/python3.11/site-packages/werkzeug/local.py", line 519, in _get_current_object
+    raise RuntimeError(unbound_message) from None
+RuntimeError: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context().

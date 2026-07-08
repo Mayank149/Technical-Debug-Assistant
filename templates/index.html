@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Technical Debug Assistant · Deep Space AI</title>
+  <meta name="description" content="RAG-powered technical debugging assistant using FAISS vector search and LLaMA-3.3-70b for precise, context-grounded answers." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+<!-- Background effects -->
+<canvas id="starfield"></canvas>
+<div class="nebula nebula-1"></div>
+<div class="nebula nebula-2"></div>
+<div class="nebula nebula-3"></div>
+
+<!-- ── Upload side panel ───────────────────────────────────────────────────── -->
+<div class="panel-overlay" id="panel-overlay" onclick="closeUploadPanel()"></div>
+
+<aside class="upload-panel" id="upload-panel" role="complementary" aria-label="Upload files">
+  <div class="upload-panel-header">
+    <span class="upload-panel-title">📁 Knowledge Upload</span>
+    <button class="upload-close-btn" onclick="closeUploadPanel()" title="Close">✕</button>
+  </div>
+
+  <div class="upload-panel-body">
+
+    <!-- Hidden file input (outside the label to avoid double-trigger) -->
+    <input
+      type="file"
+      id="file-input"
+      accept=".txt,.md"
+      multiple
+      style="display:none"
+      onchange="handleFileSelect(event)"
+    />
+
+    <!-- Drop zone — wrapping label so ANY click opens the picker -->
+    <label
+      class="drop-zone"
+      id="drop-zone"
+      for="file-input"
+      ondragover="handleDragOver(event)"
+      ondragleave="handleDragLeave(event)"
+      ondrop="handleDrop(event)"
+    >
+      <span class="drop-zone-icon">📂</span>
+      <p class="drop-zone-title">Drop files here or click to browse</p>
+      <p class="drop-zone-sub">.txt and .md · max 5 MB each</p>
+    </label>
+
+    <!-- Progress indicator -->
+    <div class="upload-progress" id="upload-progress">
+      <div class="upload-spinner"></div>
+      <span class="upload-progress-text" id="upload-progress-text">Uploading…</span>
+    </div>
+
+    <!-- Indexed files list -->
+    <span class="upload-section-label">Indexed files</span>
+    <div class="upload-file-list" id="upload-file-list">
+      <div class="upload-empty">No files uploaded yet.</div>
+    </div>
+
+  </div>
+</aside>
+
+<!-- ── App shell ───────────────────────────────────────────────────────────── -->
+<div class="app-shell">
+
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <div class="logo-icon"><span>🔬</span></div>
+      <div class="logo-text">
+        <h1>Debug Assistant</h1>
+        <span>RAG · FAISS · LLaMA-3.3-70b</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <div id="status-pill" class="loading">
+        <div class="status-dot"></div>
+        <span id="status-label">Initialising…</span>
+      </div>
+
+      <!-- Upload toggle -->
+      <button class="btn" id="upload-btn" onclick="openUploadPanel()" title="Upload files to knowledge base">
+        📎 Upload
+        <span class="upload-badge" id="upload-badge">0</span>
+      </button>
+
+      <button class="btn btn-danger" id="clear-btn" onclick="clearHistory()" title="Clear history">
+        🗑 Clear
+      </button>
+    </div>
+  </header>
+
+  <!-- Main chat area -->
+  <main>
+    <div id="chat-feed">
+      <!-- Welcome splash -->
+      <div class="welcome" id="welcome-screen">
+        <div class="welcome-orb"><span>🐛</span></div>
+        <h2>What shall we debug today?</h2>
+        <p>Ask a technical question. I'll search through the knowledge base and surface a precise, context-grounded answer.</p>
+        <div class="suggestion-chips">
+          <div class="chip" onclick="useChip(this)">How do I fix a NullPointerException?</div>
+          <div class="chip" onclick="useChip(this)">What causes CUDA out-of-memory errors?</div>
+          <div class="chip" onclick="useChip(this)">Why is my model not converging?</div>
+          <div class="chip" onclick="useChip(this)">How to handle import errors in Python?</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input dock -->
+    <div class="input-dock">
+      <div class="input-wrapper">
+        <textarea
+          id="question-input"
+          rows="1"
+          placeholder="Ask a debugging question…"
+          onkeydown="handleKey(event)"
+          oninput="autoResize(this)"
+        ></textarea>
+        <button id="send-btn" onclick="sendQuestion()" title="Send (Enter)">➤</button>
+      </div>
+      <div class="input-hint">
+        <kbd>Enter</kbd>&nbsp;to send &nbsp;·&nbsp; <kbd>Shift+Enter</kbd>&nbsp;for new line
+      </div>
+    </div>
+  </main>
+
+</div>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<!-- Scripts -->
+<script src="/static/main.js"></script>
+
+</body>
+</html>
